@@ -1,6 +1,7 @@
 import axios from 'axios';
+import type { User, Expense, Category, Summary, Trend, CategoryDistribution } from './types';
 
-const API_URL = 'http://localhost:8000';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 const api = axios.create({
   baseURL: API_URL,
@@ -15,31 +16,32 @@ api.interceptors.request.use((config) => {
 });
 
 export const auth = {
-  login: (data: any) => api.post('/auth/login', data, {
+  login: (data: URLSearchParams) => api.post<{ access_token: string }>('/auth/login', data, {
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
   }),
-  register: (data: any) => api.post('/auth/register', data),
-  getMe: () => api.get('/auth/me'),
-  updateMe: (data: any) => api.put('/auth/me', data),
+  register: (data: Partial<User> & { password?: string }) => api.post<User>('/auth/register', data),
+  getMe: () => api.get<User>('/auth/me'),
+  updateMe: (data: Partial<User> & { password?: string }) => api.put<User>('/auth/me', data),
 };
 
 export const expenses = {
-  getAll: (params: any) => api.get('/expenses/', { params }),
-  create: (data: any) => api.post('/expenses/', data),
-  update: (id: number, data: any) => api.put(`/expenses/${id}`, data),
-  delete: (id: number) => api.delete(`/expenses/${id}`),
+  getAll: (params: { search?: string; category_id?: string; limit?: number; skip?: number }) => 
+    api.get<Expense[]>('/expenses/', { params }),
+  create: (data: Omit<Expense, 'id' | 'user_id'>) => api.post<Expense>('/expenses/', data),
+  update: (id: number, data: Partial<Expense>) => api.put<Expense>(`/expenses/${id}`, data),
+  delete: (id: number) => api.delete<{ message: string }>(`/expenses/${id}`),
 };
 
 export const categories = {
-  getAll: () => api.get('/categories/'),
-  create: (data: any) => api.post('/categories/', data),
-  seed: () => api.post('/categories/seed'),
+  getAll: () => api.get<Category[]>('/categories/'),
+  create: (data: Omit<Category, 'id' | 'user_id'>) => api.post<Category>('/categories/', data),
+  seed: () => api.post<{ message: string }>('/categories/seed'),
 };
 
 export const analytics = {
-  getSummary: () => api.get('/analytics/summary'),
-  getTrends: () => api.get('/analytics/trends'),
-  getDistribution: () => api.get('/analytics/category-distribution'),
+  getSummary: () => api.get<Summary>('/analytics/summary'),
+  getTrends: () => api.get<Trend[]>('/analytics/trends'),
+  getDistribution: () => api.get<CategoryDistribution[]>('/analytics/category-distribution'),
 };
 
 export default api;

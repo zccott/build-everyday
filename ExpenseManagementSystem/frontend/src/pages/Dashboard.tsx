@@ -3,14 +3,15 @@ import { analytics, expenses } from '../api';
 import { TrendingUp, TrendingDown, Wallet, Calendar, AlertTriangle, Sparkles } from 'lucide-react';
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, 
-  PieChart, Pie, Cell, LineChart, Line 
+  PieChart, Pie, Cell 
 } from 'recharts';
+import type { Summary, Trend, CategoryDistribution, Expense } from '../types';
 
 const Dashboard: React.FC = () => {
-  const [summary, setSummary] = useState<any>(null);
-  const [trends, setTrends] = useState<any[]>([]);
-  const [distribution, setDistribution] = useState<any[]>([]);
-  const [recentExpenses, setRecentExpenses] = useState<any[]>([]);
+  const [summary, setSummary] = useState<Summary | null>(null);
+  const [trends, setTrends] = useState<Trend[]>([]);
+  const [distribution, setDistribution] = useState<CategoryDistribution[]>([]);
+  const [recentExpenses, setRecentExpenses] = useState<Expense[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -52,13 +53,12 @@ const Dashboard: React.FC = () => {
         </div>
       </header>
 
-      {/* Summary Cards */}
       <div className="stats-grid">
         <div className="glass-card stat-card">
           <div className="stat-label">Monthly Expenses</div>
           <div className="stat-value text-primary">${summary?.monthly_expenses.toFixed(2)}</div>
-          <div className={`stat-change ${summary?.monthly_expenses > 0 ? "up" : ""}`}>
-             {summary?.monthly_expenses > 0 ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
+          <div className={`stat-change ${(summary?.monthly_expenses ?? 0) > 0 ? "up" : ""}`}>
+             {(summary?.monthly_expenses ?? 0) > 0 ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
              <span>vs last month</span>
           </div>
         </div>
@@ -76,7 +76,6 @@ const Dashboard: React.FC = () => {
         </div>
       </div>
 
-      {/* Charts Row */}
       <div className="dashboard-grid">
         <div className="glass-card chart-container col-span-2">
           <h3>Spending Trend</h3>
@@ -129,7 +128,6 @@ const Dashboard: React.FC = () => {
         </div>
       </div>
 
-      {/* Insights & Recent Expenses */}
       <div className="dashboard-grid mt-8">
         <div className="glass-card">
           <div className="flex-between mb-4">
@@ -187,90 +185,30 @@ const Dashboard: React.FC = () => {
         .mt-8 { margin-top: 32px; }
         .mb-4 { margin-bottom: 16px; }
         .col-span-2 { grid-column: span 2; }
-        
-        .date-badge {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          padding: 8px 16px;
-          border-radius: 12px;
-          font-weight: 600;
-        }
-
-        .stat-change { 
-          display: flex; 
-          align-items: center; 
-          gap: 4px; 
-          font-size: 12px; 
-          font-weight: 600;
-          margin-top: 4px; 
-        }
+        .date-badge { display: flex; align-items: center; gap: 10px; padding: 8px 16px; border-radius: 12px; font-weight: 600; }
+        .stat-change { display: flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 600; margin-top: 4px; }
         .stat-change.up { color: #ff4b4b; }
         .stat-change.down { color: var(--accent); }
-
-        .stat-progress-bg {
-          width: 100%;
-          height: 6px;
-          background: rgba(255,255,255,0.05);
-          border-radius: 10px;
-          margin-top: 12px;
-          overflow: hidden;
-        }
+        .stat-progress-bg { width: 100%; height: 6px; background: rgba(255,255,255,0.05); border-radius: 10px; margin-top: 12px; overflow: hidden; }
         .stat-progress-bar { height: 100%; border-radius: 10px; }
-
         .chart-wrapper { margin-top: 24px; }
-        
-        .legend {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 12px;
-          margin-top: 16px;
-        }
-        .legend-item {
-          display: flex;
-          align-items: center;
-          gap: 6px;
-          font-size: 12px;
-        }
-        .legend-color {
-          width: 8px;
-          height: 8px;
-          border-radius: 50%;
-        }
-
-        .transaction-item {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding: 12px 0;
-          border-bottom: 1px solid var(--border);
-        }
+        .legend { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 16px; }
+        .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; }
+        .legend-color { width: 8px; height: 8px; border-radius: 50%; }
+        .transaction-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); }
         .transaction-item:last-child { border-bottom: none; }
         .transaction-info { display: flex; align-items: center; gap: 12px; }
         .transaction-amount { font-weight: 700; color: #ff4b4b; }
-
         .insight-card { border-left: 4px solid var(--secondary); }
         .insight-header { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
         .insight-content { display: flex; flex-direction: column; gap: 16px; }
         .insight-item { display: flex; gap: 12px; font-size: 14px; }
-        .insight-icon {
-          width: 28px;
-          height: 28px;
-          border-radius: 8px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          flex-shrink: 0;
-        }
+        .insight-icon { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .bg-blue { background: rgba(99, 102, 241, 0.1); color: var(--primary); }
         .bg-green { background: rgba(16, 185, 129, 0.1); color: var(--accent); }
         .bg-yellow { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
-        
         .loading { display: flex; justify-content: center; align-items: center; height: 300px; color: var(--text-muted); }
-
-        @media (max-width: 1024px) {
-          .col-span-2 { grid-column: span 1; }
-        }
+        @media (max-width: 1024px) { .col-span-2 { grid-column: span 1; } }
       `}</style>
     </div>
   );

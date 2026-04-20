@@ -18,7 +18,7 @@ const App: React.FC = () => {
         try {
           await apiAuth.getMe();
           setIsAuthenticated(true);
-        } catch (err) {
+        } catch {
           localStorage.removeItem('token');
           setIsAuthenticated(false);
         }
