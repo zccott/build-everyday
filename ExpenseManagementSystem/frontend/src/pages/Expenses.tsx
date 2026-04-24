@@ -2,14 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { expenses, categories as apiCategories } from '../api';
 import { Plus, Search, Filter, Trash2, Edit3, X, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import type { Expense, Category } from '../types';
 
 const Expenses: React.FC = () => {
-  const [expenseList, setExpenseList] = useState<Expense[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
+  const [expenseList, setExpenseList] = useState<any[]>([]);
+  const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
+  const [editingExpense, setEditingExpense] = useState<any>(null);
   
   // Filters
   const [search, setSearch] = useState('');
@@ -24,31 +23,7 @@ const Expenses: React.FC = () => {
     date: new Date().toISOString().split('T')[0]
   });
 
-
-
-  useEffect(() => {
-    let cancelled = false;
-    const fetchExpenses = async () => {
-      try {
-        const [expRes, catRes] = await Promise.all([
-          expenses.getAll({ search, category_id: categoryId }),
-          apiCategories.getAll()
-        ]);
-        if (!cancelled) {
-          setExpenseList(expRes.data);
-          setCategories(catRes.data);
-          setLoading(false);
-        }
-      } catch (err) {
-        console.error("Error fetching data", err);
-        if (!cancelled) setLoading(false);
-      }
-    };
-    fetchExpenses();
-    return () => { cancelled = true; };
-  }, [search, categoryId]);
-
-  const refreshData = async () => {
+  const fetchData = async () => {
     try {
       const [expRes, catRes] = await Promise.all([
         expenses.getAll({ search, category_id: categoryId }),
@@ -57,11 +32,17 @@ const Expenses: React.FC = () => {
       setExpenseList(expRes.data);
       setCategories(catRes.data);
     } catch (err) {
-      console.error("Error refreshing data", err);
+      console.error("Error fetching data", err);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleOpenModal = (expense: Expense | null = null) => {
+  useEffect(() => {
+    fetchData();
+  }, [search, categoryId]);
+
+  const handleOpenModal = (expense: any = null) => {
     if (expense) {
       setEditingExpense(expense);
       setFormData({
@@ -87,10 +68,9 @@ const Expenses: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const data = {
-      name: formData.name,
+      ...formData,
       amount: parseFloat(formData.amount),
       category_id: parseInt(formData.category_id),
-      notes: formData.notes,
       date: new Date(formData.date).toISOString()
     };
 
@@ -101,8 +81,8 @@ const Expenses: React.FC = () => {
         await expenses.create(data);
       }
       setIsModalOpen(false);
-      refreshData();
-    } catch {
+      fetchData();
+    } catch (err) {
       alert("Error saving expense");
     }
   };
@@ -110,7 +90,7 @@ const Expenses: React.FC = () => {
   const handleDelete = async (id: number) => {
     if (window.confirm("Are you sure you want to delete this expense?")) {
       await expenses.delete(id);
-      refreshData();
+      fetchData();
     }
   };
 
@@ -124,6 +104,7 @@ const Expenses: React.FC = () => {
         </button>
       </header>
 
+      {/* Filters */}
       <div className="filters-bar glass-card mb-8">
         <div className="search-group">
           <Search size={18} className="text-muted" />
@@ -145,6 +126,7 @@ const Expenses: React.FC = () => {
         </div>
       </div>
 
+      {/* Expense Table */}
       <div className="table-container">
         <table className="custom-table">
           <thead>
@@ -169,7 +151,7 @@ const Expenses: React.FC = () => {
                   <td className="text-muted">{new Date(exp.date).toLocaleDateString()}</td>
                   <td className="font-semibold">{exp.name}</td>
                   <td>
-                    <span className="badge" style={{ backgroundColor: categories.find(c => c.id === exp.category_id)?.color + '22', color: categories.find(c => c.id === exp.category_id)?.color ?? '#fff' }}>
+                    <span className="badge" style={{ backgroundColor: categories.find(c => c.id === exp.category_id)?.color + '22', color: categories.find(c => c.id === exp.category_id)?.color }}>
                       {categories.find(c => c.id === exp.category_id)?.name}
                     </span>
                   </td>
@@ -196,6 +178,7 @@ const Expenses: React.FC = () => {
         </table>
       </div>
 
+      {/* Modal */}
       <AnimatePresence>
         {isModalOpen && (
           <div className="modal-overlay">
@@ -287,27 +270,110 @@ const Expenses: React.FC = () => {
       </AnimatePresence>
 
       <style>{`
-        .filters-bar { display: flex; gap: 20px; padding: 16px 24px; align-items: center; }
-        .search-group { display: flex; align-items: center; gap: 12px; flex: 1; }
-        .search-group input { background: none; border: none; outline: none; color: white; width: 100%; font-size: 15px; }
-        .filter-group { display: flex; align-items: center; gap: 12px; padding-left: 20px; border-left: 1px solid var(--border); }
-        .filter-group select { background: none; border: none; color: white; outline: none; cursor: pointer; }
-        .action-btn { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.05); color: var(--text-muted); }
+        .filters-bar {
+          display: flex;
+          gap: 20px;
+          padding: 16px 24px;
+          align-items: center;
+        }
+        
+        .search-group {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          flex: 1;
+        }
+        
+        .search-group input {
+          background: none;
+          border: none;
+          outline: none;
+          color: white;
+          width: 100%;
+          font-size: 15px;
+        }
+
+        .filter-group {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          padding-left: 20px;
+          border-left: 1px solid var(--border);
+        }
+
+        .filter-group select {
+          background: none;
+          border: none;
+          color: white;
+          outline: none;
+          cursor: pointer;
+        }
+
+        .action-btn {
+          width: 36px;
+          height: 36px;
+          border-radius: 10px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: rgba(255,255,255,0.05);
+          color: var(--text-muted);
+        }
         .action-btn:hover { background: rgba(255,255,255,0.1); color: white; }
         .action-btn.delete:hover { border: 1px solid #ff4b4b; color: #ff4b4b; background: rgba(255, 75, 75, 0.1); }
         .action-btn.edit:hover { border: 1px solid var(--primary); color: var(--primary); background: rgba(99, 102, 241, 0.1); }
-        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
-        .modal-content { width: 100%; max-width: 600px; padding: 40px; }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; }
+
+        .modal-overlay {
+          position: fixed;
+          top: 0; left: 0; right: 0; bottom: 0;
+          background: rgba(0,0,0,0.6);
+          backdrop-filter: blur(8px);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 1000;
+          padding: 20px;
+        }
+
+        .modal-content {
+          width: 100%;
+          max-width: 600px;
+          padding: 40px;
+        }
+
+        .modal-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 32px;
+        }
+
         .close-btn { background: none; color: var(--text-muted); }
-        .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .modal-footer { display: flex; justify-content: flex-end; gap: 16px; margin-top: 32px; }
+
+        .input-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 20px;
+        }
+
+        .modal-footer {
+          display: flex;
+          justify-content: flex-end;
+          gap: 16px;
+          margin-top: 32px;
+        }
+
         .font-bold { font-weight: 700; }
         .text-center { text-align: center; }
         .py-12 { padding-top: 48px; padding-bottom: 48px; }
         .flex { display: flex; }
         .gap-2 { gap: 8px; }
-        @media (max-width: 640px) { .filters-bar { flex-direction: column; align-items: stretch; } .filter-group { border-left: none; border-top: 1px solid var(--border); padding-left: 0; padding-top: 16px; } .input-grid { grid-template-columns: 1fr; } }
+
+        @media (max-width: 640px) {
+          .filters-bar { flex-direction: column; align-items: stretch; }
+          .filter-group { border-left: none; border-top: 1px solid var(--border); padding-left: 0; padding-top: 16px; }
+          .input-grid { grid-template-columns: 1fr; }
+        }
       `}</style>
     </div>
   );

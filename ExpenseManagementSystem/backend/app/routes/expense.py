@@ -10,7 +10,6 @@ from app.services import auth_service
 
 router = APIRouter(prefix="/expenses", tags=["Expenses"])
 
-
 @router.post("/", response_model=schemas.Expense)
 def create_expense(
     expense: schemas.ExpenseCreate,
@@ -20,10 +19,9 @@ def create_expense(
     # Verify category exists
     category = db.query(models.Category).filter(
         (models.Category.id == expense.category_id) &
-        ((models.Category.user_id is None) |
-         (models.Category.user_id == current_user.id))
+        ((models.Category.user_id == None) | (models.Category.user_id == current_user.id))
     ).first()
-
+    
     if not category:
         raise HTTPException(status_code=404, detail="Category not found")
 
@@ -33,12 +31,11 @@ def create_expense(
     )
     if not db_expense.date:
         db_expense.date = datetime.utcnow()
-
+        
     db.add(db_expense)
     db.commit()
     db.refresh(db_expense)
     return db_expense
-
 
 @router.get("/", response_model=List[schemas.Expense])
 def get_expenses(
@@ -51,10 +48,8 @@ def get_expenses(
     db: Session = Depends(get_db),
     current_user: models.User = Depends(auth_service.get_current_user)
 ):
-    query = db.query(
-        models.Expense).filter(
-        models.Expense.user_id == current_user.id)
-
+    query = db.query(models.Expense).filter(models.Expense.user_id == current_user.id)
+    
     if category_id:
         query = query.filter(models.Expense.category_id == category_id)
     if month:
@@ -66,10 +61,8 @@ def get_expenses(
             (models.Expense.name.ilike(f"%{search}%")) |
             (models.Expense.notes.ilike(f"%{search}%"))
         )
-
-    return query.order_by(models.Expense.date.desc()
-                          ).offset(skip).limit(limit).all()
-
+        
+    return query.order_by(models.Expense.date.desc()).offset(skip).limit(limit).all()
 
 @router.put("/{expense_id}", response_model=schemas.Expense)
 def update_expense(
@@ -82,18 +75,17 @@ def update_expense(
         models.Expense.id == expense_id,
         models.Expense.user_id == current_user.id
     ).first()
-
+    
     if not db_expense:
         raise HTTPException(status_code=404, detail="Expense not found")
-
+    
     update_data = expense_update.dict(exclude_unset=True)
     for key, value in update_data.items():
         setattr(db_expense, key, value)
-
+        
     db.commit()
     db.refresh(db_expense)
     return db_expense
-
 
 @router.delete("/{expense_id}")
 def delete_expense(
@@ -105,10 +97,10 @@ def delete_expense(
         models.Expense.id == expense_id,
         models.Expense.user_id == current_user.id
     ).first()
-
+    
     if not db_expense:
         raise HTTPException(status_code=404, detail="Expense not found")
-
+        
     db.delete(db_expense)
     db.commit()
     return {"message": "Expense deleted successfully"}

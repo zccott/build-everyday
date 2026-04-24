@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { auth as apiAuth } from '../api';
 import { Mail, Lock, LogIn, AlertCircle } from 'lucide-react';
-import { AxiosError } from 'axios';
 
 interface LoginProps {
   onLogin: () => void;
@@ -29,9 +28,8 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
       localStorage.setItem('token', response.data.access_token);
       onLogin();
       navigate('/dashboard');
-    } catch (err) {
-      const axiosError = err as AxiosError<{ detail: string }>;
-      setError(axiosError.response?.data?.detail || 'Login failed. Please check your credentials.');
+    } catch (err: any) {
+      setError(err.response?.data?.detail || 'Login failed. Please check your credentials.');
     } finally {
       setLoading(false);
     }
@@ -99,19 +97,83 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
       </div>
 
       <style>{`
-        .auth-page { display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
-        .auth-card { width: 100%; max-width: 440px; padding: 48px; }
-        .auth-header { text-align: center; margin-bottom: 32px; }
-        .auth-header h1 { font-size: 32px; margin-bottom: 8px; }
-        .auth-header p { color: var(--text-muted); }
-        .input-wrapper { position: relative; }
-        .input-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
-        .input-field { padding-left: 44px; }
-        .w-full { width: 100%; margin-top: 24px; }
-        .error-badge { background: rgba(255, 75, 75, 0.1); color: #ff4b4b; padding: 12px; border-radius: 12px; margin-bottom: 24px; display: flex; align-items: center; gap: 10px; font-size: 14px; border: 1px solid rgba(255, 75, 75, 0.2); }
-        .auth-footer { text-align: center; margin-top: 32px; color: var(--text-muted); font-size: 14px; }
-        .auth-footer a { color: var(--primary); font-weight: 600; }
-        .auth-footer a:hover { text-decoration: underline; }
+        .auth-page {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          min-height: 100vh;
+          padding: 20px;
+        }
+
+        .auth-card {
+          width: 100%;
+          max-width: 440px;
+          padding: 48px;
+        }
+
+        .auth-header {
+          text-align: center;
+          margin-bottom: 32px;
+        }
+
+        .auth-header h1 {
+          font-size: 32px;
+          margin-bottom: 8px;
+        }
+
+        .auth-header p {
+          color: var(--text-muted);
+        }
+
+        .input-wrapper {
+          position: relative;
+        }
+
+        .input-icon {
+          position: absolute;
+          left: 14px;
+          top: 50%;
+          transform: translateY(-50%);
+          color: var(--text-muted);
+        }
+
+        .input-field {
+          padding-left: 44px;
+        }
+
+        .w-full {
+          width: 100%;
+          margin-top: 24px;
+        }
+
+        .error-badge {
+          background: rgba(255, 75, 75, 0.1);
+          color: #ff4b4b;
+          padding: 12px;
+          border-radius: 12px;
+          margin-bottom: 24px;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          font-size: 14px;
+          border: 1px solid rgba(255, 75, 75, 0.2);
+        }
+
+        .auth-footer {
+          text-align: center;
+          margin-top: 32px;
+          color: var(--text-muted);
+          font-size: 14px;
+        }
+
+        .auth-footer a {
+          color: var(--primary);
+          font-weight: 600;
+        }
+
+        .auth-footer a:hover {
+          text-decoration: underline;
+        }
       `}</style>
     </div>
   );

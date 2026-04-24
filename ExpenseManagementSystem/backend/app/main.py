@@ -11,7 +11,7 @@ app = FastAPI(title="Expense Management API")
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # In production, specify the frontend URL
+    allow_origins=["*"], # In production, specify the frontend URL
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -21,7 +21,6 @@ app.include_router(auth.router)
 app.include_router(expense.router)
 app.include_router(category.router)
 app.include_router(analytics.router)
-
 
 @app.get("/")
 def read_root():

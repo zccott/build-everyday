@@ -17,7 +17,6 @@ DEFAULT_CATEGORIES = [
     {"name": "Others", "icon": "box", "color": "#9E9E9E"}
 ]
 
-
 @router.get("/", response_model=List[schemas.Category])
 def get_categories(
     db: Session = Depends(get_db),
@@ -25,10 +24,8 @@ def get_categories(
 ):
     # Return global categories (user_id is null) plus user's custom ones
     return db.query(models.Category).filter(
-        (models.Category.user_id is None) | (
-            models.Category.user_id == current_user.id)
+        (models.Category.user_id == None) | (models.Category.user_id == current_user.id)
     ).all()
-
 
 @router.post("/", response_model=schemas.Category)
 def create_category(
@@ -45,18 +42,16 @@ def create_category(
     db.refresh(db_category)
     return db_category
 
-
 @router.post("/seed", tags=["Internal"])
 def seed_categories(db: Session = Depends(get_db)):
     # Check if we already have categories
-    existing = db.query(models.Category).filter(
-        models.Category.user_id is None).count()
+    existing = db.query(models.Category).filter(models.Category.user_id == None).count()
     if existing > 0:
         return {"message": "Categories already seeded"}
-
+    
     for cat in DEFAULT_CATEGORIES:
         db_cat = models.Category(**cat, user_id=None)
         db.add(db_cat)
-
+    
     db.commit()
     return {"message": "Default categories seeded successfully"}
