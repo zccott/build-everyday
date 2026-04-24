@@ -58,4 +58,4 @@ class Budget(Base):
     category_id = Column(Integer, ForeignKey("categories.id"), nullable=False)
 
     user = relationship("User", back_populates="budgets")
-    category = relationship("Category", back_populates="budgets")
+    category = relationship("Category", back_populates="budgets")

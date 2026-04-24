@@ -96,4 +96,4 @@ class Summary(BaseModel):
     monthly_expenses: float
     weekly_expenses: float
     remaining_balance: float
-    savings_percentage: float
+    savings_percentage: float

@@ -24,4 +24,4 @@ app.include_router(analytics.router)
 
 @app.get("/")
 def read_root():
-    return {"message": "Expense Management System API is running"}
+    return {"message": "Expense Management System API is running"}
