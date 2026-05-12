@@ -1,7 +1,8 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routes.snippets import router
+from routes.snippets import router as snippet_router
+from routes.auth import router as auth_router
 from db.models import init_db
 
 @asynccontextmanager
@@ -19,7 +20,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(router)
+app.include_router(auth_router)
+app.include_router(snippet_router)
+
 
 @app.get("/health")
 def health():

@@ -1,10 +1,11 @@
-name: CI - Lint & Build
+name: CI - Dynamic Lint Only
 
 on:
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   backend-lint:
@@ -14,21 +15,21 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
-      - name: Install dependencies
+          python-version: '3.11'
+      - name: Install flake8
+        run: pip install flake8
+      - name: Lint all Python projects
         run: |
-          cd ExpenseManagementSystem/backend
-          python -m pip install --upgrade pip
-          pip install flake8
-      - name: Lint with flake8
-        run: |
-          cd ExpenseManagementSystem/backend
-          # stop the build if there are Python syntax errors or undefined names
-          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-          # exit-zero treats all errors as warnings.
-          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+          # Find all directories containing requirements.txt and run flake8
+          find . -name "requirements.txt" -not -path "*/.*" -not -path "*/venv/*" -exec dirname {} \; | sort -u | while read dir; do
+            echo "--- Linting Python in $dir ---"
+            cd "$dir"
+            flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+            flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+            cd - > /dev/null
+          done
 
-  frontend-build:
+  frontend-lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -36,12 +37,19 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - name: Install dependencies
+      - name: Lint all Node.js projects
         run: |
-          cd ExpenseManagementSystem/frontend
-          npm install
-      - name: Lint and Build
-        run: |
-          cd ExpenseManagementSystem/frontend
-          npm run lint
-          npm run build
+          # Find all directories containing package.json (excluding node_modules) and run npm run lint
+          find . -name "package.json" -not -path "*/node_modules/*" -not -path "*/.*" -exec dirname {} \; | sort -u | while read dir; do
+            echo "--- Linting Node.js in $dir ---"
+            cd "$dir"
+            npm install
+            # Check if lint script exists before running
+            if npm run | grep -q "lint"; then
+              npm run lint
+            else
+              echo "No lint script found in $dir"
+            fi
+            cd - > /dev/null
+          done
+

@@ -18,6 +18,8 @@ class SnippetUpdate(BaseModel):
 class SnippetRead(SnippetBase):
     id: int
     created_at: str
+    owner_id: int
 
     class Config:
-        from_attributes = True
+        from_attributes = True
+
