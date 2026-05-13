@@ -1,73 +1,62 @@
-# React + TypeScript + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# 🎨 Snippet Manager Frontend
 
-Currently, two official plugins are available:
+A modern, responsive, and visually stunning React application featuring a custom glassmorphism design system.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## ✨ Highlights
 
-## React Compiler
+*   **Glassmorphism UI**: Built from scratch using Vanilla CSS for maximum performance and flexibility.
+*   **TypeScript**: Type-safe development for a robust and maintainable codebase.
+*   **Vite**: Lightning-fast build tool and development server.
+*   **Responsive Design**: Optimized for everything from mobile devices to large desktop monitors.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 🛠️ Tech Stack
 
-## Expanding the ESLint configuration
+*   **Library**: [React 18](https://reactjs.org/)
+*   **Build Tool**: [Vite](https://vitejs.dev/)
+*   **Language**: [TypeScript](https://www.typescriptlang.org/)
+*   **Styling**: Vanilla CSS (Custom Glassmorphism System)
+*   **Icons**: [Lucide React](https://lucide.dev/) (Planned)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🚀 Getting Started
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### Local Development
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+1.  **Install Dependencies**:
+    ```bash
+    npm install
+    ```
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+2.  **Environment Variables**:
+    Create a `.env` file based on `sample.env`:
+    ```env
+    VITE_API_URL=http://localhost:8000
+    ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+3.  **Start Development Server**:
+    ```bash
+    npm run dev
+    ```
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+4.  **Build for Production**:
+    ```bash
+    npm run build
+    ```
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## 🏗️ Design System
+
+This project uses a custom-built **Glassmorphism Design System** defined in the CSS variables. Key principles include:
+
+*   **Translucency**: `rgba` backgrounds with `backdrop-filter: blur()`.
+*   **Vibrant Gradients**: Deep blues, purples, and pinks for a premium feel.
+*   **Micro-animations**: Subtle hover transitions and scaling effects.
+*   **Typography**: Clean, modern sans-serif fonts for high readability.
+
+## 📁 Project Structure
+
+*   `src/components/`: Reusable UI components (Buttons, Inputs, Cards).
+*   `src/pages/`: Main application views (Dashboard, Login, Register).
+*   `src/api/`: API client and service definitions.
+*   `src/styles/`: Global styles and design system tokens.
+*   `src/types/`: Shared TypeScript interfaces and types.
+

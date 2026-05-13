@@ -1,69 +1,69 @@
 # 🚀 build-everyday
 
-A daily coding practice repository focused on building real-world, production-ready full-stack applications.
+A curated collection of daily coding projects focused on building high-performance, production-ready full-stack applications.
+
+![Banner](https://img.shields.io/badge/Daily--Coding-Consistency-blueviolet?style=for-the-badge&logo=github)
+![Tech Stack](https://img.shields.io/badge/Stack-Fullstack-green?style=for-the-badge)
+![Status](https://img.shields.io/badge/Status-Active-success?style=for-the-badge)
 
 ## 🎯 Goal
 
-The goal of this repository is simple:
+The mission is simple: **Continuous improvement through consistent building.**
 
-> **Build something every day. Improve every day.**
-
-Instead of solving isolated problems, this repo focuses on:
-
-* Real-world project development
-* Clean architecture
-* Scalable backend design
-* Practical frontend integration
-
----
-
-## 🛠️ Tech Stack
-
-* **Backend:** FastAPI, PostgreSQL, SQLAlchemy
-* **Frontend:** React (Vite, TypeScript), Vanilla CSS
-* **Auth:** JWT / Bcrypt
-* **DevOps:** Docker, GitHub Actions
+This repository serves as a personal laboratory for exploring:
+*   🏛️ **Clean Architecture** & SOLID Principles
+*   🚀 **Scalable Backend Systems** (FastAPI, PostgreSQL/SQLite)
+*   🎨 **Premium Frontend UI** (React, Glassmorphism, Modern CSS)
+*   🛠️ **DevOps Mastery** (Docker, CI/CD, GitHub Actions)
 
 ---
 
 ## 📦 Projects
 
-### 📅 Week 1: Expense Management System
-A premium full-stack expense tracker designed with Glassmorphism aesthetics and AI-driven insights.
-* **Status**: 🟢 Completed (Phase 1)
-* **Stack**: FastAPI + React
-* **Key Features**: Auth, Expense CRUD, Analytics Charts, Profile Management.
+### 🌟 Project 1: Glassmorphism Snippet Manager
+A modern, sleek code snippet manager with JWT authentication, syntax highlighting, and a premium glassmorphism design.
+*   **Status**: 🟢 Completed
+*   **Stack**: FastAPI + React + TypeScript + SQLite
+*   **Key Features**:
+    *   Secure Auth (JWT + Bcrypt)
+    *   Full CRUD for Code Snippets
+    *   Responsive Glassmorphism UI
+    *   Dockerized Deployment
+*   **Explore**: [snippet-manager/](./snippet-manager)
 
 ---
 
 ## 📈 Approach
 
-* **Build daily**: Consistency is key.
-* **Code quality**: Focus on maintainability, SOLID principles, and clean separation of concerns.
-* **Best practices**: Comprehensive documentation, Dockerization, and CI/CD.
+*   **Consistency**: Building every single day to sharpen engineering instincts.
+*   **Quality First**: No "tutorial code." Every project is built with production standards in mind.
+*   **Modern Tooling**: Leveraging `uv`, `vite`, `docker`, and `github-actions` for optimal developer experience.
 
 ---
 
 ## 🚧 Roadmap
 
-* [x] Project 1: Expense Management System
-* [ ] Project 2: *Coming Soon*
-* [ ] Shared CI/CD pipeline improvements
-* [ ] Kubernetes deployment templates
+- [x] Project 1: Glassmorphism Snippet Manager
 
 ---
 
 ## 💡 Why this repo?
 
-Most tutorials stop at “it works.” This repo focuses on writing maintainable code, structuring scalable projects, and thinking like a senior engineer.
+In a world of "Getting Started" guides, this repository aims for "Getting to Production." It focuses on the architectural decisions, security considerations, and deployment strategies that define professional software engineering.
 
 ---
 
 ## 📌 Usage
 
-Each project resides in its own folder under the root. Navigate to a project folder for specific installation instructions.
+Each project is self-contained within its respective directory.
 
 ```bash
-cd ExpenseManagementSystem
-# Follow README.md inside
+# Clone the repository
+git clone https://github.com/rahul-aot/build-everyday.git
+
+# Navigate to a project
+cd snippet-manager
+
+# Follow the setup instructions in the project README
 ```
+
